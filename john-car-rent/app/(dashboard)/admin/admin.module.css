@@ -1,0 +1,4 @@
+.scrollableContainer {
+  height: 100vh; /* Full viewport height */
+  overflow-y: auto;
+}

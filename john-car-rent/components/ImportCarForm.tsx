@@ -4,7 +4,7 @@ import styles from './ImportCarForm.module.css';
 
 // Define the interface for the car items
 interface Car {
-  id: number;
+  id: string;
   name: string;
   brand: string;
   price: number;
@@ -16,7 +16,7 @@ interface ImportCarFormProps {
 }
 
 const ImportCarForm: React.FC<ImportCarFormProps> = ({ onCarAdded }) => {
-  const [car, setCar] = useState<Car>({ id: 0, name: '', brand: '', price: 0, imageUrl: '' });
+  const [car, setCar] = useState<Car>({ id: '', name: '', brand: '', price: 0, imageUrl: '' });
   const [isImageLoading, setIsImageLoading] = useState(true);
 
   const handleSubmit = (event: React.FormEvent) => {

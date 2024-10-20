@@ -27,7 +27,7 @@
 }
 
 .carCard:hover {
-  transform: translateY(-5px);
+  transform: scale(1.05);
 }
 
 .carCard h3 {
@@ -40,21 +40,26 @@
 
 .carCardBtnContainer {
   display: flex;
-  justify-content: space-between;
-  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
   margin-top: 10px;
 }
 
 .carCardBtnContainer button {
-  padding: 10px 20px;
-  border: none;
+  flex: 1 1 45%; /* Make buttons take up 45% of the container width */
+  margin: 5px;
+  padding: 10px;
   border-radius: 4px;
+  background-color: #0070f3;
+  color: white;
+  border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s ease;
 }
 
 .carCardBtnContainer button:hover {
-  background-color: #ddd;
+  background-color: #005bb5;
 }
 
 .pagination {
@@ -64,21 +69,21 @@
 }
 
 .pagination button {
-  padding: 10px 15px;
   margin: 0 5px;
+  padding: 5px 10px;
   border: none;
   border-radius: 4px;
+  background-color: #0070f3;
+  color: white;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .pagination button:hover {
-  background-color: #ddd;
+  background-color: #005bb5;
 }
 
 .pagination .active {
-  background-color: #0070f3;
-  color: #fff;
+  background-color: #005bb5;
 }
 
 .scrollableContainer {

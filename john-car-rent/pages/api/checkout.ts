@@ -1,43 +1,49 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { db } from '@/lib/db';
-import * as z from 'zod';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { PrismaClient } from '@prisma/client';
 
-// Define a schema for input validation
-const cartItemSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  brand: z.string(),
-  price: z.number().positive(),
-  imageUrl: z.string().url(),
-});
-
-const cartSchema = z.array(cartItemSchema);
+const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
+    const { cart, userId } = req.body;
+
+    // Log the request body for debugging
+    console.log('Request body:', req.body);
+
+    // Validate the request body
+    if (!Array.isArray(cart) || typeof userId !== 'string') {
+      console.error('Invalid request body:', req.body);
+      return res.status(400).json({ error: 'Invalid request body' });
+    }
+
     try {
-      const { cart } = req.body;
-      const validatedCart = cartSchema.parse(cart);
+      // Validate cart items
+      for (const item of cart) {
+        if (!item.id || typeof item.price !== 'number') {
+          console.error('Invalid cart item:', item);
+          return res.status(400).json({ error: 'Invalid cart item' });
+        }
+      }
 
-      // Calculate the total price of the cart
-      const total = validatedCart.reduce((sum, item) => sum + item.price, 0);
-
-      // Save the total to the Income table
-      const newIncome = await db.income.create({
+      // Process the checkout with the cart items and userId
+      const order = await prisma.order.create({
         data: {
-          total,
+          userId,
+          items: {
+            create: cart.map((item: any) => ({
+              carId: item.id,
+              price: item.price,
+            })),
+          },
         },
       });
 
-      return res.status(200).json({ message: 'Checkout successful!', total: newIncome.total });
+      res.status(200).json({ message: 'Checkout successful', order });
     } catch (error) {
       console.error('Error during checkout:', error);
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: 'Invalid cart data', details: error.errors });
-      }
-      return res.status(500).json({ error: 'Failed to process checkout', details: error instanceof Error ? error.message : 'Unknown error' });
+      res.status(500).json({ error: 'Error during checkout' });
     }
   } else {
-    return res.status(405).json({ message: 'Method not allowed' });
+    res.status(405).json({ error: 'Method not allowed' });
   }
 }

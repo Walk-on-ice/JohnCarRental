@@ -1,14 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { CustomButton } from "@components/CustomButton";
+import { Button } from "@components/ui/button"; // Import the Button component
+import { useEffect, useState } from "react"; // Import useEffect and useState
+import { useRouter } from "next/navigation";
 
 const Hero = () => {
-  const handleScroll = () => {
-    const nextSection = document.getElementById("discover");
+  const router = useRouter(); // Initialize the router
+  const [isMounted, setIsMounted] = useState(false); // State to check if component is mounted
 
-    if (nextSection) {
-      nextSection.scrollIntoView({ behavior: "smooth" });
+  useEffect(() => {
+    setIsMounted(true); // Set isMounted to true when the component mounts
+  }, []);
+
+  const handleScroll = () => {
+    if (isMounted) {
+      router.push("/CarCataloguePage"); // Redirect to the CarCatalogue section
     }
   };
 
@@ -24,11 +31,14 @@ const Hero = () => {
           process.
         </p>
 
-        <CustomButton
-          title="Explore Cars"
-          containerStyles="bg-primary-blue text-white rounded-full mt-10"
-          handleClick={handleScroll}
-        />
+        <Button
+          variant="default"
+          size="lg"
+          className="bg-primary-blue text-white rounded-full mt-10"
+          onClick={handleScroll}
+        >
+          Explore Cars
+        </Button>
       </div>
       <div className="hero__image-container">
         <div className="hero__image">

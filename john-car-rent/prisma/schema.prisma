@@ -13,7 +13,7 @@ model car {
   brand     String
   price     Float
   imageUrl  String
-  rentals   Rental[]
+  Item Item[]
 }
 
 model Users {
@@ -21,23 +21,24 @@ model Users {
   username       String    @unique
   password       String
   email          String    @unique
-  secretPassword String?
   createdAt      DateTime  @default(now())
   updateUt       DateTime  @updatedAt
-  rentals        Rental[]
+  orders         Order[]
 }
 
-model Income {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  total Float
+model Item {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  carId  String @db.ObjectId
+  price  Float
+  order  Order  @relation(fields: [orderId], references: [id])
+  orderId String @db.ObjectId
+  car    car    @relation(fields: [carId], references: [id])
+
 }
 
-model Rental {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
-  carId     String   @db.ObjectId
-  startDate DateTime
-  endDate   DateTime?
-  user      Users    @relation(fields: [userId], references: [id])
-  car       car      @relation(fields: [carId], references: [id])
+model Order {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId String  @db.ObjectId
+  items  Item[]
+  user   Users   @relation(fields: [userId], references: [id])
 }

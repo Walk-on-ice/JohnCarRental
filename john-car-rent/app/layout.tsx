@@ -1,5 +1,4 @@
 import "./globals.css";
-
 import { Footer } from "@components/Footer";
 import { NavBar } from "@components/Navbar";
 import Provider from "@components/Provider";
@@ -12,16 +11,16 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='en'>
-      <body className='relative'>
+    <html lang="en">
+      <body className="relative">
         <Provider>
-          <main className='flex flex-col'>
           <NavBar />
-          {children}
+          <main className="main-content pt-16"> {/* Add padding */}
+            {children}
           </main>
         </Provider>
+        <Toaster />
       </body>
-      <Toaster />
     </html>
   );
 }

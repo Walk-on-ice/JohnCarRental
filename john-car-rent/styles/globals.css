@@ -76,3 +76,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* globals.css */
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.main-content {
+  padding-top: 60px; /* Adjust this value based on the height of your navbar */
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.scrollable-container {
+  height: calc(100vh - 60px); /* Adjust this value based on the height of your navbar */
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.container {
+  padding-top: var(--navbar-height);
+}

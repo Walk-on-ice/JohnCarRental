@@ -1,5 +1,4 @@
 import CarCatalogue from '@/components/CarCatalogue';
-import Cart from '@/components/Cart';
 import React from 'react';
 
 const Page = () => {

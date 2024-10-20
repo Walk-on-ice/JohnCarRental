@@ -5,10 +5,20 @@ import axios from 'axios';
 import ImportCarForm from './ImportCarForm'; 
 import Image from 'next/image';
 import styles from './CarCatalogue.module.css';
+import { Button } from '@components/ui/button'; // Import the Button component
+import { useToast } from '@components/hooks/use-toast';
 
 // Define the interface for the car items
 interface Car {
-  id: number;
+  id: string;
+  name: string;
+  brand: string;
+  price: number;
+  imageUrl: string;
+}
+
+interface CartItem {
+  id: string;
   name: string;
   brand: string;
   price: number;
@@ -16,6 +26,7 @@ interface Car {
 }
 
 const CarCatalogue = () => {
+  const { toast } = useToast();
   const [cars, setCars] = useState<Car[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const carsPerPage = 5; // Number of cars to display per page
@@ -28,13 +39,39 @@ const CarCatalogue = () => {
         console.log('Fetched cars:', response.data);
       } catch (error) {
         console.error('Error fetching cars:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to fetch cars.',
+          variant: 'destructive',
+        });
       }
     };
     fetchCars();
   }, []);
+  
+  const addToCart = (car: Car) => {
+    const cartItem: CartItem = {
+      id: car.id,
+      name: car.name,
+      brand: car.brand,
+      price: car.price,
+      imageUrl: car.imageUrl,
+    };
 
-  const addToCart = async (car: Car) => {
-    await axios.post('/api/cart', { car });
+    // Retrieve existing cart from local storage
+    const storedCart = localStorage.getItem('cart');
+    const cart = storedCart ? JSON.parse(storedCart) : [];
+
+    // Add new item to cart
+    cart.push(cartItem);
+
+    // Store updated cart in local storage
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    toast({
+      title: 'Success',
+      description: 'Car added to cart.',
+    });
   };
 
   const exportCar = async (car: Car) => {
@@ -45,17 +82,57 @@ const CarCatalogue = () => {
         },
       });
       console.log('Car exported:', response.data);
+      toast({
+        title: 'Success',
+        description: 'Car exported successfully.',
+      });
     } catch (error) {
       console.error('Error exporting car:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to export car.',
+        variant: 'destructive',
+      });
     }
   };
 
-  const deleteCar = async (carId: number) => {
+  const deleteCar = async (carId: string) => {
     try {
       await axios.delete(`/api/cars/${carId}`);
       setCars((prevCars) => prevCars.filter((car) => car.id !== carId));
+      toast({
+        title: 'Success',
+        description: 'Car deleted successfully.',
+      });
     } catch (error) {
       console.error('Error deleting car:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to delete car.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const rentCar = async (carId: string) => {
+    try {
+      const response = await axios.post('/api/rentals', {
+        carId,
+        userId: 'user-id-here', // Replace with actual user ID
+        start: new Date(),
+      });
+      console.log('Car rented:', response.data);
+      toast({
+        title: 'Success',
+        description: 'Car rented successfully.',
+      });
+    } catch (error) {
+      console.error('Error renting car:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to rent car.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -79,11 +156,12 @@ const CarCatalogue = () => {
             <Image src={car.imageUrl} alt={car.name} width={500} height={300} />
             <h3>{car.name}</h3>
             <p>{car.brand}</p>
-            <p>{car.price} baht per day</p>
+            <p>{car.price}$</p>
             <div className={styles.carCardBtnContainer}>
-              <button onClick={() => addToCart(car)}>Add to Cart</button>
-              <button onClick={() => exportCar(car)}>Export Car</button>
-              <button onClick={() => deleteCar(car.id)}>Delete Car</button>
+              <Button variant="default" size="sm" onClick={() => addToCart(car)}>Add to Cart</Button>
+              <Button variant="default" size="sm" onClick={() => exportCar(car)}>Export Car</Button>
+              <Button variant="default" size="sm" onClick={() => deleteCar(car.id)}>Delete Car</Button>
+              <Button variant="default" size="sm" onClick={() => rentCar(car.id)}>Rent</Button>
             </div>
           </div>
         ))}

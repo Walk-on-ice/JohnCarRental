@@ -27,15 +27,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(409).json({ user: null, message: 'Car with this name already exists' });
       }
 
-      const existingCarByBrand = await db.car.findFirst({
-        where: {
-          brand: brand,
-        },
-      });
-      if (existingCarByBrand) {
-        return res.status(409).json({ user: null, message: 'Car with this brand already exists' });
-      }
-
       const newCar = await db.car.create({
         data: {
           name,

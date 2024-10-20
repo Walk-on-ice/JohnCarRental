@@ -1,4 +1,72 @@
+/* admin.module.css */
+.container {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    flex-direction: row;
+  }
+}
+
+.content {
+  flex: 1;
+  margin-right: 20px;
+}
+
 .scrollableContainer {
-  height: 100vh; /* Full viewport height */
+  height: calc(100vh - 60px); /* Adjust this value based on the height of your navbar */
   overflow-y: auto;
+  padding: 20px;
+}
+
+.dashboard {
+  flex: 2;
+  padding: 20px;
+  background-color: #f4f4f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.card h2 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+.card pre {
+  background: #f4f4f9;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.card ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.card ul li {
+  margin-bottom: 10px;
+}
+
+.card ul li a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.card ul li a:hover {
+  text-decoration: underline;
 }
